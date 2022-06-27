@@ -12,6 +12,9 @@ const RomanNumeralsConverter = () => {
   };
 
   const submitNumber = () => {
+    if (error) {
+    setError(false)
+    }
     setSubmit(true);
   };
 
@@ -21,10 +24,14 @@ const RomanNumeralsConverter = () => {
         .then((res) => res.json())
         .then(
           (result) => {
+            console.log("result", result);
+            if (result.message) {
+              setError(result.message);
+            }
             setRomanNumerals(result.convertedNumber);
           },
           (error) => {
-            setError(error);
+            console.error(error);
           },
           setSubmit(false)
         );
@@ -50,7 +57,7 @@ const RomanNumeralsConverter = () => {
       <button onClick={submitNumber}>
         Submit
       </button>
-      <p>result in Roman numerals: {romanNumerals}</p>
+      <p>result in Roman numerals: {error ? error : romanNumerals}</p>
     </>
   );
 };
