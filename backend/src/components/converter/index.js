@@ -1,4 +1,4 @@
-const convertToRomanNumerals = async (req, res) => {
+const convertToRomanNumerals = (req, res) => {
   try {
     const intNumber = req.query.number;
 
