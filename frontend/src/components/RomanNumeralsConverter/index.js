@@ -24,7 +24,6 @@ const RomanNumeralsConverter = () => {
         .then((res) => res.json())
         .then(
           (result) => {
-            console.log("result", result);
             if (result.message) {
               setError(result.message);
             }
