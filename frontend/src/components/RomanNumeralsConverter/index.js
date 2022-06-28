@@ -5,6 +5,7 @@ const RomanNumeralsConverter = () => {
   const [submit, setSubmit] = React.useState(false);
   const [romanNumerals, setRomanNumerals] = React.useState(0);
   const [error, setError] = React.useState();
+  const [submitted, setSubmitted] = React.useState(false);
 
   const updateNumber = (e) => {
     e.preventDefault();
@@ -13,7 +14,7 @@ const RomanNumeralsConverter = () => {
 
   const submitNumber = () => {
     if (error) {
-    setError(false)
+      setError(false);
     }
     setSubmit(true);
   };
@@ -27,7 +28,9 @@ const RomanNumeralsConverter = () => {
             if (result.message) {
               setError(result.message);
             }
-            setRomanNumerals(result.convertedNumber);
+            if (result.status === "ok") {
+              setSubmitted(true);
+            }
           },
           (error) => {
             console.error(error);
@@ -37,6 +40,14 @@ const RomanNumeralsConverter = () => {
     }
   }, [submit, number]);
 
+  React.useEffect(() => {
+    if (submitted) {
+      let eventSource = new EventSource("api/converter/result");
+      eventSource.onmessage = (e) => setRomanNumerals(e.data);
+      setSubmit(false);
+    }
+  }, [submitted]);
+  
   return (
     <>
       <h1>Roman numerals converter</h1>
@@ -53,9 +64,7 @@ const RomanNumeralsConverter = () => {
         ></input>
       </label>
 
-      <button onClick={submitNumber}>
-        Submit
-      </button>
+      <button onClick={submitNumber}>Submit</button>
       <p>result in Roman numerals: {error ? error : romanNumerals}</p>
     </>
   );
